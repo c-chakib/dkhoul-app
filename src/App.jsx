@@ -192,28 +192,28 @@ const CONTENT = {
       { 
         phase: "Phase 1: MVP & Lancement (Mois 1-6)", 
         action: "Fondation Technique & Pilote", 
-        cost: "600 000 DH", 
-        desc: "Frais principaux: Développement Web/Mobile (300K), Salaires Core Team (180K), Marketing de lancement Rabat (70K), Infra AWS & Admin (50K)."
+        cost: "200 000 DH", 
+        desc: "Frais principaux: Développement Web/Mobile (100K), Salaires Core Team (60K), Marketing de lancement Rabat (23K), Infra AWS & Admin (17K)."
       },
       { 
         phase: "Phase 2: Croissance & Traction (Mois 6-12)", 
         action: "Acquisition & Optimisation", 
-        cost: "500 000 DH", 
-        desc: "Frais principaux: Campagnes Marketing Digital & Influence (200K), Recrutement Support & Ops (150K), Itérations Produit v2 (100K), Expansion Marrakech (50K)."
+        cost: "167 000 DH", 
+        desc: "Frais principaux: Campagnes Marketing Digital & Influence (67K), Recrutement Support & Ops (50K), Itérations Produit v2 (33K), Expansion Marrakech (17K)."
       },
       { 
         phase: "Phase 3: Pré-Scale & Rentabilité (Mois 12-18)", 
         action: "Scale & Préparation Série A", 
-        cost: "400 000 DH", 
-        desc: "Frais principaux: Renforcement Équipe Tech (150K), Marketing National (100K), Optimisation Infra & Sécurité (50K), Réserve Stratégique (100K)."
+        cost: "133 000 DH", 
+        desc: "Frais principaux: Renforcement Équipe Tech (50K), Marketing National (33K), Optimisation Infra & Sécurité (17K), Réserve Stratégique (33K)."
       }
     ],
     pnl_table: [
       { item: "Revenus", y1: "36M", y2: "582M", y3: "1.7Md", y4: "5.9Md", y5: "16.3Md" },
       { item: "Coûts Directs", y1: "-9M", y2: "-62M", y3: "-183M", y4: "-840M", y5: "-2.3Md" },
-      { item: "Marge Brute", y1: "27M", y2: "520M", y3: "1.5Md", y4: "5.1Md", y5: "14.0Md" },
+      { item: "Marge Brute", y1: "27M", y2: "520M", y3: "0.5Md", y4: "5.1Md", y5: "14.0Md" },
       { item: "Dépenses Ops", y1: "-1.7M", y2: "-3.3M", y3: "-7.0M", y4: "-9.2M", y5: "-11.7M" },
-      { item: "EBITDA", y1: "25.3M", y2: "516M", y3: "1.5Md", y4: "5.1Md", y5: "14.0Md" }
+      { item: "EBITDA", y1: "25.3M", y2: "516M", y3: "0.5Md", y4: "5.1Md", y5: "14.0Md" }
     ],
     invest_title: "Pourquoi Investir Maintenant ?",
     invest_text: "Une opportunité unique de participer à la digitalisation du tourisme marocain avec un modèle éprouvé et une équipe experte.",
@@ -712,7 +712,7 @@ const FinancialView = () => (
       <div className="grid lg:grid-cols-2 gap-12">
         {/* UTILISATION DES FONDS */}
         <Card className="border-t-4 border-t-[#C2410C]">
-          <h3 className="text-2xl font-bold mb-6 text-[#0F172A] font-serif flex items-center gap-2"><PieChart className="text-[#C2410C]"/> Allocation Seed (1.5M DH)</h3>
+          <h3 className="text-2xl font-bold mb-6 text-[#0F172A] font-serif flex items-center gap-2"><PieChart className="text-[#C2410C]"/> Allocation Seed (0.5M DH)</h3>
           <div className="space-y-6">
             {CONTENT.financial.seed_allocation.map((item, i) => (
               <div key={i}>
