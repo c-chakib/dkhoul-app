@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { Button } from './shared';
 import { CONTENT } from '../content';
+import { UserContext } from '../contexts/UserContext.jsx';
 
-const Navbar = () => {
+const Navbar = ({ onUserClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useContext(UserContext);
 
   const navItems = [
     { path: '/', label: CONTENT.nav.home },
@@ -58,6 +60,21 @@ const Navbar = () => {
             </div>
           </div>
 
+          {/* User Button */}
+          {user && (
+            <div className="hidden md:block">
+              <button
+                onClick={onUserClick}
+                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-[#C2410C] hover:bg-orange-50 transition-colors"
+              >
+                <div className="w-8 h-8 bg-[#C2410C]/10 rounded-full flex items-center justify-center">
+                  <User size={16} className="text-[#C2410C]" />
+                </div>
+                <span>{user.name || user.email}</span>
+              </button>
+            </div>
+          )}
+
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button
@@ -87,6 +104,20 @@ const Navbar = () => {
                 {item.label}
               </button>
             ))}
+            {user && (
+              <button
+                onClick={() => {
+                  onUserClick();
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium w-full text-left text-slate-600 hover:text-[#C2410C] hover:bg-orange-50 transition-colors"
+              >
+                <div className="w-8 h-8 bg-[#C2410C]/10 rounded-full flex items-center justify-center">
+                  <User size={16} className="text-[#C2410C]" />
+                </div>
+                <span>{user.name || user.email}</span>
+              </button>
+            )}
           </div>
         </div>
       )}

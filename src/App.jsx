@@ -1,4 +1,4 @@
-﻿import React, { lazy, Suspense } from 'react';
+﻿import React, { lazy, Suspense, useState, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { CONTENT } from './content';
 
@@ -6,6 +6,8 @@ import { CONTENT } from './content';
 import Navbar from './components/Navbar';
 import ErrorPage from './components/ErrorPage';
 import Loading from './components/Loading';
+import UserDashboard from './components/UserDashboard';
+import { UserContext } from './contexts/UserContext.jsx';
 
 // Lazy load non-critical components for better performance
 const LandingPage = lazy(() => import('./components/LandingPage'));
@@ -61,9 +63,12 @@ const PresentationViewWrapper = () => {
 };
 
 const App = () => {
+  const [showUserDashboard, setShowUserDashboard] = useState(false);
+  const { user } = useContext(UserContext);
+
   return (
     <Router>
-      <Navbar />
+      <Navbar onUserClick={() => setShowUserDashboard(true)} />
       <Suspense fallback={<Loading message="Chargement de la page..." />}>
         <Routes>
           <Route path="/" element={<LandingPageWrapper />} />
@@ -77,6 +82,9 @@ const App = () => {
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Suspense>
+      {user && showUserDashboard && (
+        <UserDashboard onClose={() => setShowUserDashboard(false)} />
+      )}
     </Router>
   );
 };

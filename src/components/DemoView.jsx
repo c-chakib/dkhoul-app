@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { Star, MapPin, Users, Clock, Check, UserCheck, LockKeyhole, CreditCard, X, Send, Search, Globe, Home, GraduationCap, Grid, List, MessageCircle, Zap, Info, Layout, Layers, DollarSign, Award, Shield } from 'lucide-react';
+import React, { useState, useMemo, useContext } from 'react';
+import { Star, MapPin, Users, Clock, Check, UserCheck, LockKeyhole, CreditCard, X, Send, Search, Globe, Home, GraduationCap, Grid, List, MessageCircle, Zap, Info, Layout, Layers, DollarSign, Award, Shield, Heart } from 'lucide-react';
 import { Button, Card, Section } from './shared';
 import { CONTENT } from '../content';
+import { UserContext } from '../contexts/UserContext.jsx';
 
 const ServiceListCard = ({ service, setSelectedService, setShowChat }) => (
     <Card className="flex flex-col md:flex-row gap-6 p-4 md:p-6 !rounded-xl !shadow-md hover:!shadow-float transition-all duration-300">
@@ -18,6 +19,23 @@ const ServiceListCard = ({ service, setSelectedService, setShowChat }) => (
                     <Zap size={12} className="inline-block mr-1"/>
                     Réservation immédiate
                 </div>
+            )}
+            {user && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (isFavorite(service.id)) {
+                            removeFromFavorites(service.id);
+                        } else {
+                            addToFavorites(service);
+                        }
+                    }}
+                    className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition-all ${
+                        isFavorite(service.id) ? 'bg-red-500 text-white' : 'bg-white/80 text-secondary hover:bg-white'
+                    }`}
+                >
+                    <Heart size={16} className={isFavorite(service.id) ? 'fill-current' : ''} />
+                </button>
             )}
         </div>
 
@@ -196,6 +214,8 @@ const FilterSidebar = ({ filters, setFilters }) => {
 };
 
 const DemoView = () => {
+    const { user, addBooking, addToFavorites, removeFromFavorites, isFavorite, sendMessage, login } = useContext(UserContext);
+    
     // ... (Logique inchangée pour les filtres et le tri)
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedService, setSelectedService] = useState(null);
@@ -284,6 +304,23 @@ const DemoView = () => {
                 <Zap size={12} className="inline-block mr-1"/>
                 Instantané
               </div>
+            )}
+            {user && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isFavorite(service.id)) {
+                    removeFromFavorites(service.id);
+                  } else {
+                    addToFavorites(service);
+                  }
+                }}
+                className={`absolute top-3 right-16 p-2 rounded-full shadow-md transition-all ${
+                  isFavorite(service.id) ? 'bg-red-500 text-white' : 'bg-white/80 text-secondary hover:bg-white'
+                }`}
+              >
+                <Heart size={16} className={isFavorite(service.id) ? 'fill-current' : ''} />
+              </button>
             )}
           </div>
 
@@ -543,7 +580,28 @@ const DemoView = () => {
                       </div>
                     </div>
 
-                    <Button onClick={() => alert('Réservation confirmée ! 🎉\n\nVous recevrez un email de confirmation et les coordonnées de votre hôte.')} className="w-full !py-4">
+                    <Button onClick={() => {
+                        if (!user) {
+                            alert('Veuillez vous connecter pour réserver.');
+                            return;
+                        }
+                        const booking = {
+                            id: Date.now().toString(),
+                            serviceId: serviceToBook.id,
+                            serviceTitle: serviceToBook.title,
+                            providerName: serviceToBook.providerName,
+                            date: bookingData.date,
+                            time: bookingData.time,
+                            guests: parseInt(bookingData.guests),
+                            totalPrice: serviceToBook.pricing.basePrice * parseInt(bookingData.guests),
+                            currency: serviceToBook.pricing.currency,
+                            status: 'confirmed',
+                            createdAt: new Date().toISOString()
+                        };
+                        addBooking(booking);
+                        alert('Réservation confirmée ! 🎉\n\nVous recevrez un email de confirmation et les coordonnées de votre hôte.');
+                        handleCloseBooking();
+                    }} className="w-full !py-4">
                       Confirmer et Payer
                     </Button>
                   </div>
@@ -565,8 +623,16 @@ const DemoView = () => {
 
         if (!showChat) return null;
 
-        const sendMessage = () => {
+        const sendMessageToProvider = () => {
+            if (!user) {
+                alert('Veuillez vous connecter pour envoyer des messages.');
+                return;
+            }
             if (newMessage.trim()) {
+                // Send message using UserContext
+                sendMessage(selectedService.providerName, newMessage);
+                
+                // Update local messages for UI
                 setMessages([...messages, {
                     id: messages.length + 1,
                     sender: 'user',
@@ -577,10 +643,13 @@ const DemoView = () => {
 
                 // Simulate host response
                 setTimeout(() => {
+                    const hostResponse = 'Parfait ! Je vous envoie les détails de réservation. Vous pouvez aussi réserver directement via la plateforme.';
+                    sendMessage(selectedService.providerName, hostResponse, false); // false = from host
+                    
                     setMessages(prev => [...prev, {
                         id: prev.length + 1,
                         sender: 'host',
-                        text: 'Parfait ! Je vous envoie les détails de réservation. Vous pouvez aussi réserver directement via la plateforme.',
+                        text: hostResponse,
                         time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
                     }]);
                 }, 2000);
@@ -628,9 +697,9 @@ const DemoView = () => {
                                 className="flex-1 p-3 border border-outline rounded-xl focus:border-primary transition-colors"
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                onKeyPress={(e) => e.key === 'Enter' && sendMessageToProvider()}
                             />
-                            <Button onClick={sendMessage} className="!p-3 !px-4">
+                            <Button onClick={sendMessageToProvider} className="!p-3 !px-4">
                                 <Send size={16} />
                             </Button>
                         </div>
@@ -668,6 +737,20 @@ const DemoView = () => {
               <p className="text-xl text-secondary/70 max-w-2xl mx-auto mb-8">
                 {CONTENT.demo.subtitle}
               </p>
+
+              {!user && (
+                <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-xl max-w-md mx-auto">
+                  <p className="text-sm text-secondary/70 mb-3 text-center">
+                    Connectez-vous pour réserver, ajouter aux favoris et chatter avec les hôtes
+                  </p>
+                  <Button 
+                    onClick={() => login('demo@example.com', 'password')} 
+                    className="!py-2 !px-6 mx-auto block"
+                  >
+                    Connexion Démo
+                  </Button>
+                </div>
+              )}
 
               {/* Search Bar */}
               <div className="max-w-2xl mx-auto relative">
