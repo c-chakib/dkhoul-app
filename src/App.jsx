@@ -8,7 +8,8 @@ import {
   UserCheck, Award, Target, Coffee, Info, HelpCircle,
   BarChart3, PieChart, Layers, FileCheck, GraduationCap,
   Calculator, LockKeyhole, Fingerprint, Flag, Globe2,
-  ArrowUpRight, Download, Quote, PlayCircle, Wallet, CreditCard
+  ArrowUpRight, Download, Quote, PlayCircle, Wallet, CreditCard,
+  MessageCircle, Clock, Send, Grid, List
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -27,7 +28,9 @@ const TOKENS = {
     white: '#FFFFFF',
     gray: '#F8FAFC',
     surface: '#FFFFFF',
-    chart: ['#C2410C', '#EA580C', '#F97316', '#FB923C', '#FDBA74']
+    'surface-variant': '#F8FAFC',
+    outline: '#E2E8F0',
+    'outline-variant': '#CBD5E1'
   },
   shadows: {
     primary: '0 4px 14px 0 rgba(194, 65, 12, 0.39)',
@@ -147,13 +150,773 @@ const CONTENT = {
   },
 
   demo: {
-    title: "Plateforme (Démo)",
-    subtitle: "Découvrez nos services authentiques",
+    title: "Plateforme DKHOUL (Démo Interactive)",
+    subtitle: "Découvrez l'expérience complète de notre marketplace touristique marocaine",
     categories: { space: "Espace", skills: "Compétences", connect: "Connexion" },
     filter_all: "Tous",
+    search_placeholder: "Rechercher un service (ex: Riad, Cuisine, Guide)...",
+    filters: {
+      price_min: "Prix min",
+      price_max: "Prix max", 
+      rating: "Note minimum",
+      location: "Ville",
+      category: "Catégorie"
+    },
+    cities: ["Marrakech", "Rabat", "Casablanca", "Fès", "Agadir", "Tanger", "Chefchaouen", "Ouarzazate", "Ourika"],
+    sort_options: ["Pertinence", "Prix croissant", "Prix décroissant", "Note décroissante"],
+    view_modes: ["grid", "list"],
     steps: {
-        book_now: "Réserver"
-    }
+        book_now: "Réserver maintenant",
+        view_details: "Voir détails",
+        contact_host: "Contacter l'hôte",
+        instant_book: "Réservation instantanée"
+    },
+    stats: {
+      hosts: "500+",
+      travelers: "10k+",
+      services: "5k+"
+    },
+    main_categories: [
+      {
+        name: "Espace",
+        tagline: "Monétise ton espace",
+        description: "Louez votre espace inutilisé pour des besoins touristiques quotidiens. De l'espace de coworking au stockage de bagages.",
+        icon: "meeting_room",
+        priceRange: "25-300 DH",
+        examples: ["Stockage bagages", "Coworking maison", "Parking sécurisé", "Espace événement"]
+      },
+      {
+        name: "Compétences", 
+        tagline: "Vends ton savoir-faire",
+        description: "Partagez vos compétences locales et culturelles. De la cuisine traditionnelle aux artisanats ancestraux.",
+        icon: "school",
+        priceRange: "100-500 DH",
+        examples: ["Cours de Darija", "Cuisine marocaine", "Atelier poterie", "Balade photo"]
+      },
+      {
+        name: "Connexion",
+        tagline: "Louez votre temps",
+        description: "Connectez les touristes avec la vie locale authentique. Du dîner familial aux conseils personnalisés.",
+        icon: "people",
+        priceRange: "50-400 DH", 
+        examples: ["Dîner authentique", "Guide local", "Conseils voyage", "Baby-sitting"]
+      }
+    ],
+    mock_users: [
+      { id: 1, name: "Fatima Alaoui", avatar: "👩‍🍳", rating: 4.9, reviews: 45, location: "Marrakech", verified: true },
+      { id: 2, name: "Ahmed Bennani", avatar: "👨‍💼", rating: 4.8, reviews: 32, location: "Rabat", verified: true },
+      { id: 3, name: "Sara Tazi", avatar: "👩‍🎨", rating: 5.0, reviews: 28, location: "Casablanca", verified: true },
+      { id: 4, name: "Youssef Idrissi", avatar: "👨‍🍳", rating: 4.7, reviews: 67, location: "Fès", verified: true }
+    ],
+    mock_services: [
+      {
+        id: 1,
+        hostId: "host_001",
+        category: "Space",
+        title: "Stockage Bagages Sécurisé - Gueliz",
+        description: "Stockage sécurisé pour vos bagages pendant votre visite de la médina. Mon appartement est à 5 minutes à pied de la place Jemaa el-Fnaa. Caméra de surveillance et cadenas électroniques.",
+        images: ["luggage"],
+        location: {
+          address: "Rue de la Kasbah, Gueliz",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6295, lng: -7.9811 }
+        },
+        pricing: {
+          basePrice: 25,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 24
+        },
+        amenities: ["Sécurisé 24/7", "Caméra surveillance", "À 5 min de la médina", "Maximum 2 valises"],
+        capacity: 2,
+        duration: 24,
+        rating: { average: 4.8, count: 156 },
+        status: "active",
+        providerName: "Fatima Alaoui",
+        providerAvatar: "👩‍🍳"
+      },
+      {
+        id: 2,
+        hostId: "host_002", 
+        category: "Skills",
+        title: "Masterclass Tajine Marocain Authentique",
+        description: "Apprenez à cuisiner un véritable tajine marocain dans ma cuisine familiale. Du marché aux épices à la dégustation finale. Cours en français, anglais ou arabe.",
+        images: ["cooking"],
+        location: {
+          address: "Quartier résidentiel, Medina",
+          city: "Marrakech", 
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6300, lng: -7.9810 }
+        },
+        pricing: {
+          basePrice: 250,
+          currency: "MAD", 
+          unit: "session"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 3,
+          maxBookingTime: 3
+        },
+        amenities: ["Cours 3h complet", "Ingrédients inclus", "Repas à emporter", "Traduction disponible"],
+        capacity: 4,
+        duration: 180,
+        rating: { average: 5.0, count: 89 },
+        status: "active",
+        providerName: "Ahmed Bennani",
+        providerAvatar: "👨‍🍳"
+      },
+      {
+        id: 3,
+        hostId: "host_003",
+        category: "Connect", 
+        title: "Dîner Authentique Chez l'Habitant",
+        description: "Dînez avec ma famille dans notre maison traditionnelle. Découvrez la vraie cuisine marocaine faite maison, partagez des histoires et vivez une expérience authentique.",
+        images: ["dinner"],
+        location: {
+          address: "Riad traditionnel, Medina",
+          city: "Marrakech",
+          region: "Marrakech-Safi", 
+          country: "Maroc",
+          coordinates: { lat: 31.6310, lng: -7.9820 }
+        },
+        pricing: {
+          basePrice: 200,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 2,
+          maxBookingTime: 2
+        },
+        amenities: ["Repas complet 4 plats", "Ambiance familiale", "Histoire et culture", "Photos souvenirs"],
+        capacity: 6,
+        duration: 120,
+        rating: { average: 5.0, count: 124 },
+        status: "active",
+        providerName: "Sara Tazi",
+        providerAvatar: "👩‍🎨"
+      },
+      {
+        id: 4,
+        hostId: "host_004",
+        category: "Skills",
+        title: "Cours de Darija - Conversation Quotidienne",
+        description: "Apprenez à négocier et échanger en darija marocain. Parfait pour votre séjour touristique. Cours adaptés à votre niveau.",
+        images: ["darija"],
+        location: {
+          address: "Café traditionnel, Ville Nouvelle",
+          city: "Rabat",
+          region: "Rabat-Salé-Kénitra",
+          country: "Maroc", 
+          coordinates: { lat: 34.0209, lng: -6.8416 }
+        },
+        pricing: {
+          basePrice: 150,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 2
+        },
+        amenities: ["Cours conversationnel", "Vocabulaire touristique", "Prononciation", "Support écrit"],
+        capacity: 1,
+        duration: 60,
+        rating: { average: 4.9, count: 67 },
+        status: "active",
+        providerName: "Youssef Idrissi",
+        providerAvatar: "👨‍🏫"
+      },
+      {
+        id: 5,
+        hostId: "host_005",
+        category: "Space",
+        title: "Coworking Maison - WiFi Fibre Optique",
+        description: "Espace de travail calme et inspirant dans une maison marocaine traditionnelle. WiFi fibre, thé/café offert, terrasse avec vue.",
+        images: ["coworking"],
+        location: {
+          address: "Maison d'hôte, Palmeraie",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6320, lng: -7.9830 }
+        },
+        pricing: {
+          basePrice: 75,
+          currency: "MAD",
+          unit: "day"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 8
+        },
+        amenities: ["WiFi fibre", "Climatisation", "Thé/café offert", "Terrasse vue"],
+        capacity: 3,
+        duration: 480,
+        rating: { average: 4.9, count: 43 },
+        status: "active",
+        providerName: "Karim Tazi",
+        providerAvatar: "👨‍💼"
+      },
+      {
+        id: 6,
+        hostId: "host_006",
+        category: "Connect",
+        title: "Guide Local - Secrets de la Medina",
+        description: "Découvrez les véritables secrets de la médina avec un local. Évitez les pièges touristiques et vivez comme un marocain.",
+        images: ["souk"],
+        location: {
+          address: "Point de rencontre flexible",
+          city: "Fès",
+          region: "Fès-Meknès",
+          country: "Maroc",
+          coordinates: { lat: 34.0333, lng: -5.0000 }
+        },
+        pricing: {
+          basePrice: 100,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 2,
+          maxBookingTime: 4
+        },
+        amenities: ["Guide local expérimenté", "Éviter arnaques", "Endroits secrets", "Histoire culturelle"],
+        capacity: 4,
+        duration: 120,
+        rating: { average: 4.6, count: 98 },
+        status: "active",
+        providerName: "Omar Alaoui",
+        providerAvatar: "👨‍🗺️"
+      },
+      // Additional Space Services
+      {
+        id: 7,
+        hostId: "host_007",
+        category: "Space",
+        title: "Douche Express - Gare Casa-Voyageurs",
+        description: "Station de douche rapide et propre à proximité de la gare Casa-Voyageurs. Eau chaude, serviettes propres, et produits d'hygiène inclus.",
+        images: ["shower"],
+        location: {
+          address: "Près Gare Casa-Voyageurs",
+          city: "Casablanca",
+          region: "Casablanca-Settat",
+          country: "Maroc",
+          coordinates: { lat: 33.5928, lng: -7.6192 }
+        },
+        pricing: {
+          basePrice: 35,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 1
+        },
+        amenities: ["Eau chaude illimitée", "Serviettes propres", "Produits d'hygiène", "Vestiaire sécurisé"],
+        capacity: 1,
+        duration: 30,
+        rating: { average: 4.7, count: 203 },
+        status: "active",
+        providerName: "Nadia Bennani",
+        providerAvatar: "👩‍💼"
+      },
+      {
+        id: 8,
+        hostId: "host_008",
+        category: "Space",
+        title: "Parking Sécurisé - Quartier Gueliz",
+        description: "Place de parking privée dans un garage sécurisé au cœur de Gueliz. Caméra surveillance 24/7 et accès contrôlé.",
+        images: ["parking"],
+        location: {
+          address: "Rue de la Liberté, Gueliz",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6285, lng: -8.0088 }
+        },
+        pricing: {
+          basePrice: 45,
+          currency: "MAD",
+          unit: "day"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 30
+        },
+        amenities: ["Surveillance 24/7", "Accès contrôlé", "Éclairage LED", "Proximité centre-ville"],
+        capacity: 1,
+        duration: 1440,
+        rating: { average: 4.8, count: 145 },
+        status: "active",
+        providerName: "Mohammed Alaoui",
+        providerAvatar: "👨‍🔧"
+      },
+      {
+        id: 9,
+        hostId: "host_009",
+        category: "Space",
+        title: "Espace Événement - Jardin Traditionnel",
+        description: "Magnifique jardin traditionnel pour vos événements privés. Capacité jusqu'à 20 personnes. Idéal pour anniversaires ou réunions familiales.",
+        images: ["event"],
+        location: {
+          address: "Jardin privé, Medina",
+          city: "Fès",
+          region: "Fès-Meknès",
+          country: "Maroc",
+          coordinates: { lat: 34.0625, lng: -4.9744 }
+        },
+        pricing: {
+          basePrice: 400,
+          currency: "MAD",
+          unit: "day"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 8,
+          maxBookingTime: 12
+        },
+        amenities: ["Jardin traditionnel", "Décoration incluse", "Service traiteur possible", "Musique autorisée"],
+        capacity: 20,
+        duration: 480,
+        rating: { average: 4.9, count: 67 },
+        status: "active",
+        providerName: "Leila Tazi",
+        providerAvatar: "👩‍🎨"
+      },
+      {
+        id: 10,
+        hostId: "host_010",
+        category: "Space",
+        title: "Coworking Riad - Vue sur Medina",
+        description: "Espace de coworking dans un riad traditionnel avec vue imprenable sur la médina. WiFi haut débit, climatisation, et thé à volonté.",
+        images: ["coworking"],
+        location: {
+          address: "Riad historique, Medina",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6298, lng: -7.9818 }
+        },
+        pricing: {
+          basePrice: 120,
+          currency: "MAD",
+          unit: "day"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 5
+        },
+        amenities: ["Vue médina", "WiFi fibre", "Climatisation", "Thé/café offert", "Imprimante"],
+        capacity: 6,
+        duration: 480,
+        rating: { average: 4.9, count: 89 },
+        status: "active",
+        providerName: "Yassine Bennani",
+        providerAvatar: "👨‍💻"
+      },
+      // Additional Skills Services
+      {
+        id: 11,
+        hostId: "host_011",
+        category: "Skills",
+        title: "Atelier Poterie Traditionnelle",
+        description: "Apprenez l'art ancestral de la poterie marocaine. De la terre à l'émail, créez votre propre pièce sous la guidance d'un maître artisan.",
+        images: ["pottery"],
+        location: {
+          address: "Atelier familial, Medina",
+          city: "Fès",
+          region: "Fès-Meknès",
+          country: "Maroc",
+          coordinates: { lat: 34.0612, lng: -4.9756 }
+        },
+        pricing: {
+          basePrice: 180,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 2,
+          maxBookingTime: 4
+        },
+        amenities: ["Matériel complet", "Pièce à emporter", "Tradition ancestrale", "Photo atelier"],
+        capacity: 3,
+        duration: 180,
+        rating: { average: 4.8, count: 134 },
+        status: "active",
+        providerName: "Hassan Alaoui",
+        providerAvatar: "👨‍🎨"
+      },
+      {
+        id: 12,
+        hostId: "host_012",
+        category: "Skills",
+        title: "Balade Photo - Spots Instagram Marrakech",
+        description: "Découvrez les meilleurs spots photo de Marrakech avec un photographe professionnel. Apprenez les techniques de composition et de lumière.",
+        images: ["photo_tour"],
+        location: {
+          address: "Point de départ flexible",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6295, lng: -7.9811 }
+        },
+        pricing: {
+          basePrice: 350,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 4,
+          maxBookingTime: 6
+        },
+        amenities: ["Photographe pro", "Édition photos", "Spots secrets", "Conseils composition"],
+        capacity: 2,
+        duration: 240,
+        rating: { average: 4.9, count: 78 },
+        status: "active",
+        providerName: "Karim Tazi",
+        providerAvatar: "📸"
+      },
+      {
+        id: 13,
+        hostId: "host_013",
+        category: "Skills",
+        title: "Initiation Musique Gnaoua - Percussions",
+        description: "Découvrez les rythmes ancestraux du Maroc avec des percussions traditionnelles. Initiation aux techniques de base et improvisation.",
+        images: ["gnaoua"],
+        location: {
+          address: "Studio musical, Ville Nouvelle",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6302, lng: -7.9825 }
+        },
+        pricing: {
+          basePrice: 220,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 2,
+          maxBookingTime: 3
+        },
+        amenities: ["Percussions incluses", "Notation musicale", "Thé traditionnel", "Enregistrement audio"],
+        capacity: 4,
+        duration: 120,
+        rating: { average: 4.9, count: 156 },
+        status: "active",
+        providerName: "Ahmed Gnaoui",
+        providerAvatar: "🥁"
+      },
+      {
+        id: 14,
+        hostId: "host_014",
+        category: "Skills",
+        title: "Cours Darija - Affaires et Négociation",
+        description: "Maîtrisez l'art de la négociation en darija marocain. Parfait pour les professionnels et entrepreneurs en voyage d'affaires.",
+        images: ["darija"],
+        location: {
+          address: "Bureau moderne, Centre-ville",
+          city: "Casablanca",
+          region: "Casablanca-Settat",
+          country: "Maroc",
+          coordinates: { lat: 33.5731, lng: -7.5898 }
+        },
+        pricing: {
+          basePrice: 200,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 3
+        },
+        amenities: ["Vocabulaire business", "Rôles pratiques", "Support professionnel", "Matériel pédagogique"],
+        capacity: 2,
+        duration: 90,
+        rating: { average: 4.8, count: 92 },
+        status: "active",
+        providerName: "Fatima Zahra",
+        providerAvatar: "👩‍🏫"
+      },
+      {
+        id: 15,
+        hostId: "host_015",
+        category: "Skills",
+        title: "Atelier Cuisine - Pastilla aux Amandes",
+        description: "Maîtrisez l'art de la pastilla, joyau de la cuisine marocaine. Préparation complète d'un plat traditionnel avec des ingrédients frais.",
+        images: ["cooking"],
+        location: {
+          address: "Cuisine familiale, Medina",
+          city: "Rabat",
+          region: "Rabat-Salé-Kénitra",
+          country: "Maroc",
+          coordinates: { lat: 34.0209, lng: -6.8416 }
+        },
+        pricing: {
+          basePrice: 280,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 3,
+          maxBookingTime: 3
+        },
+        amenities: ["Ingrédients premium", "Recette détaillée", "Dégustation", "À emporter"],
+        capacity: 3,
+        duration: 180,
+        rating: { average: 5.0, count: 67 },
+        status: "active",
+        providerName: "Amina Bennani",
+        providerAvatar: "👩‍🍳"
+      },
+      // Additional Connect Services
+      {
+        id: 16,
+        hostId: "host_016",
+        category: "Connect",
+        title: "Dîner Familial - Cuisine Berbère",
+        description: "Partagez un dîner authentique avec une famille berbère. Découvrez les saveurs des montagnes et les traditions ancestrales.",
+        images: ["dinner"],
+        location: {
+          address: "Maison berbère, Atlas",
+          city: "Ourika",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.2833, lng: -7.7167 }
+        },
+        pricing: {
+          basePrice: 250,
+          currency: "MAD",
+          unit: "session"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 3,
+          maxBookingTime: 3
+        },
+        amenities: ["Cuisine berbère", "Histoire locale", "Musique traditionnelle", "Transport inclus"],
+        capacity: 8,
+        duration: 180,
+        rating: { average: 4.9, count: 145 },
+        status: "active",
+        providerName: "Fatima Berbère",
+        providerAvatar: "👵"
+      },
+      {
+        id: 17,
+        hostId: "host_017",
+        category: "Connect",
+        title: "Guide Souk - Shopping Authentique Fès",
+        description: "Évitez les arnaques et faites de vraies affaires dans le souk de Fès. Votre guide local vous mènera aux meilleurs artisans.",
+        images: ["souk"],
+        location: {
+          address: "Entrée Souk, Medina",
+          city: "Fès",
+          region: "Fès-Meknès",
+          country: "Maroc",
+          coordinates: { lat: 34.0625, lng: -4.9744 }
+        },
+        pricing: {
+          basePrice: 120,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 2,
+          maxBookingTime: 6
+        },
+        amenities: ["Guide expérimenté", "Négociation prix", "Artisans locaux", "Histoire souk"],
+        capacity: 3,
+        duration: 180,
+        rating: { average: 4.7, count: 203 },
+        status: "active",
+        providerName: "Omar Souk",
+        providerAvatar: "🛍️"
+      },
+      {
+        id: 18,
+        hostId: "host_018",
+        category: "Connect",
+        title: "Transport Privé - Aéroport Marrakech",
+        description: "Transfert privé et confortable depuis/vers l'aéroport Marrakech. Véhicule climatisé avec chauffeur professionnel.",
+        images: ["transport"],
+        location: {
+          address: "Aéroport Marrakech",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6069, lng: -8.0363 }
+        },
+        pricing: {
+          basePrice: 180,
+          currency: "MAD",
+          unit: "trip"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 1
+        },
+        amenities: ["Véhicule climatisé", "Chauffeur professionnel", "Suivi GPS", "Assurance incluse"],
+        capacity: 4,
+        duration: 45,
+        rating: { average: 4.8, count: 289 },
+        status: "active",
+        providerName: "Hassan Transport",
+        providerAvatar: "🚗"
+      },
+      {
+        id: 19,
+        hostId: "host_019",
+        category: "Connect",
+        title: "Conseils Voyage - Itinéraire Personnalisé",
+        description: "Planifiez votre séjour marocain avec un local expérimenté. Itinéraire sur mesure selon vos intérêts et budget.",
+        images: ["advice"],
+        location: {
+          address: "Café moderne, Centre-ville",
+          city: "Casablanca",
+          region: "Casablanca-Settat",
+          country: "Maroc",
+          coordinates: { lat: 33.5731, lng: -7.5898 }
+        },
+        pricing: {
+          basePrice: 80,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 1,
+          maxBookingTime: 2
+        },
+        amenities: ["Itinéraire personnalisé", "Conseils budgétaires", "Contacts locaux", "Support WhatsApp"],
+        capacity: 1,
+        duration: 60,
+        rating: { average: 4.9, count: 167 },
+        status: "active",
+        providerName: "Sara Voyage",
+        providerAvatar: "🗺️"
+      },
+      {
+        id: 20,
+        hostId: "host_020",
+        category: "Connect",
+        title: "Médiation Santé - Consultation Médecin",
+        description: "Accompagnement linguistique et culturel pour vos consultations médicales. Traduction darija-français et aide administrative.",
+        images: ["health"],
+        location: {
+          address: "Clinique moderne, Ville Nouvelle",
+          city: "Rabat",
+          region: "Rabat-Salé-Kénitra",
+          country: "Maroc",
+          coordinates: { lat: 34.0209, lng: -6.8416 }
+        },
+        pricing: {
+          basePrice: 120,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 1,
+          maxBookingTime: 2
+        },
+        amenities: ["Traduction médicale", "Aide administrative", "Suivi post-consultation", "Contacts fiables"],
+        capacity: 2,
+        duration: 60,
+        rating: { average: 4.9, count: 98 },
+        status: "active",
+        providerName: "Dr. Leila Santé",
+        providerAvatar: "👩‍⚕️"
+      },
+      {
+        id: 21,
+        hostId: "host_021",
+        category: "Connect",
+        title: "Baby-sitting Bilingue - Soirée Libre",
+        description: "Garde d'enfants professionnelle avec une baby-sitter bilingue (français-anglais). Jeux éducatifs et sécurité garantie.",
+        images: ["babysitting"],
+        location: {
+          address: "Appartement moderne, Quartier résidentiel",
+          city: "Casablanca",
+          region: "Casablanca-Settat",
+          country: "Maroc",
+          coordinates: { lat: 33.5731, lng: -7.5898 }
+        },
+        pricing: {
+          basePrice: 90,
+          currency: "MAD",
+          unit: "hour"
+        },
+        availability: {
+          instantBook: true,
+          minBookingTime: 2,
+          maxBookingTime: 8
+        },
+        amenities: ["Baby-sitter qualifiée", "Jeux éducatifs", "Repas enfant", "Suivi sécurité"],
+        capacity: 3,
+        duration: 480,
+        rating: { average: 4.8, count: 134 },
+        status: "active",
+        providerName: "Nadia Kids",
+        providerAvatar: "👶"
+      },
+      {
+        id: 22,
+        hostId: "host_022",
+        category: "Connect",
+        title: "Travel Sherpa - Assistance Complète Maroc",
+        description: "Assistance complète pour votre séjour marocain. De l'arrivée à l'aéroport au départ, je gère tout pour vous.",
+        images: ["sherpa"],
+        location: {
+          address: "Service mobile, Tout le Maroc",
+          city: "Marrakech",
+          region: "Marrakech-Safi",
+          country: "Maroc",
+          coordinates: { lat: 31.6295, lng: -7.9811 }
+        },
+        pricing: {
+          basePrice: 250,
+          currency: "MAD",
+          unit: "day"
+        },
+        availability: {
+          instantBook: false,
+          minBookingTime: 7,
+          maxBookingTime: 30
+        },
+        amenities: ["Transferts aéroport", "Réservations hôtels", "Guides locaux", "Support 24/7", "Traduction"],
+        capacity: 6,
+        duration: 1440,
+        rating: { average: 5.0, count: 89 },
+        status: "active",
+        providerName: "Karim Sherpa",
+        providerAvatar: "🎒"
+      }
+    ]
   },
 
   financial: {
@@ -274,15 +1037,28 @@ const CONTENT = {
 const StyleInjector = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap');
-    :root { --font-header: 'Playfair Display', serif; --font-body: 'Inter', sans-serif; }
-    body { font-family: var(--font-body); color: ${TOKENS.colors.secondary}; background-color: ${TOKENS.colors.accent}; }
+    :root { 
+      --font-header: 'Playfair Display', serif; 
+      --font-body: 'Inter', sans-serif;
+      --primary: ${TOKENS.colors.primary};
+      --secondary: ${TOKENS.colors.secondary};
+      --surface: ${TOKENS.colors.surface};
+      --surface-variant: ${TOKENS.colors['surface-variant']};
+      --outline: ${TOKENS.colors.outline};
+      --outline-variant: ${TOKENS.colors['outline-variant']};
+    }
+    body { font-family: var(--font-body); color: var(--secondary); background-color: var(--surface-variant); }
     h1, h2, h3, h4, h5, h6 { font-family: var(--font-header); }
     .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
-    .gradient-text { background: linear-gradient(135deg, #C2410C, #EA580C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .gradient-text { background: linear-gradient(135deg, var(--primary), #EA580C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .chart-bar { transition: height 1s ease-out; }
     .founder-img { object-fit: cover; object-position: center; }
     .service-img { transition: transform 0.5s ease; }
     .service-card:hover .service-img { transform: scale(1.05); }
+    .bg-dot-pattern { background-image: radial-gradient(circle, rgba(194, 65, 12, 0.1) 1px, transparent 1px); background-size: 20px 20px; }
+    .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+    .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
   `}</style>
 );
 
@@ -754,62 +1530,659 @@ const FinancialView = () => (
 
 // 6. DÉMO (CATALOGUE SERVICES AVEC IMAGES)
 const DemoView = () => {
-  const [activeTab, setActiveTab] = useState('space');
-  const services = CONTENT.services_catalog[activeTab];
+  const [activeTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedService, setSelectedService] = useState(null);
+  const [showBooking, setShowBooking] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [filters, setFilters] = useState({
+    priceMin: '',
+    priceMax: '',
+    rating: '',
+    location: '',
+    category: ''
+  });
+  // const [currentUser, setCurrentUser] = useState(null);
 
-  return (
-    <div className="pt-24 bg-[#FFF7ED] min-h-screen">
-      <Section title="Nos Services" subtitle="3 Univers, 18 Services Exclusifs" bg="sand">
-        
-        <div className="flex justify-center gap-4 mb-12 flex-wrap">
-          {['space', 'skills', 'connect'].map(tab => (
-            <button 
-              key={tab} 
-              onClick={() => setActiveTab(tab)}
-              className={`px-8 py-3 rounded-full font-bold text-sm uppercase tracking-wider transition-all ${activeTab === tab ? 'bg-[#0F172A] text-white shadow-lg scale-105' : 'bg-white text-slate-500 hover:bg-slate-100'}`}
-            >
-              {CONTENT.demo.categories[tab]}
-            </button>
-          ))}
+  // Mock login
+  // const handleLogin = () => {
+  //   setCurrentUser({
+  //     id: 999,
+  //     name: "Sarah Johnson",
+  //     avatar: "👩‍💼",
+  //     type: "tourist"
+  //   });
+  // };
+
+  // Filter and sort services based on search and filters
+  const filteredServices = useMemo(() => {
+    let services = CONTENT.demo.mock_services.filter(s => 
+      activeTab === 'all' || s.category.toLowerCase() === activeTab
+    );
+    
+    if (searchQuery) {
+      services = services.filter(s => 
+        s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.providerName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Apply sidebar category filter (overrides activeTab if set)
+    if (filters.category) {
+      services = services.filter(s => s.category.toLowerCase() === filters.category);
+    }
+    
+    if (filters.priceMin) {
+      services = services.filter(s => s.pricing.basePrice >= parseInt(filters.priceMin));
+    }
+    if (filters.priceMax) {
+      services = services.filter(s => s.pricing.basePrice <= parseInt(filters.priceMax));
+    }
+    if (filters.rating) {
+      services = services.filter(s => s.rating.average >= parseFloat(filters.rating));
+    }
+    if (filters.location) {
+      services = services.filter(s => s.location.city.toLowerCase() === filters.location.toLowerCase());
+    }
+    
+    // Sort services
+    services.sort((a, b) => {
+      switch (sortBy) {
+        case 'price-asc':
+          return a.pricing.basePrice - b.pricing.basePrice;
+        case 'price-desc':
+          return b.pricing.basePrice - a.pricing.basePrice;
+        case 'rating':
+          return b.rating.average - a.rating.average;
+        default:
+          return 0;
+      }
+    });
+    
+    return services;
+  }, [activeTab, searchQuery, filters, sortBy]);
+
+  const ServiceCard = ({ service }) => (
+    <Card className="group !rounded-2xl !shadow-sm hover:!shadow-md transition-all duration-300 cursor-pointer overflow-hidden bg-surface border border-outline/10">
+      {/* Image */}
+      <div className="relative overflow-hidden h-48">
+        <img 
+          src={CONTENT.images.services[service.images[0]]} 
+          alt={service.title} 
+          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+          onError={(e) => {e.target.src='https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=800&auto=format&fit=crop'}}
+        />
+        <div className="absolute top-3 right-3 bg-surface/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-primary shadow-sm">
+          {service.category}
+        </div>
+        {service.availability.instantBook && (
+          <div className="absolute top-3 left-3 bg-green-500 text-white px-2 py-1 rounded-lg text-xs font-bold">
+            {CONTENT.demo.steps.instant_book}
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="font-bold text-lg text-secondary line-clamp-1 group-hover:text-primary transition-colors">{service.title}</h3>
+          <div className="flex items-center text-yellow-500 text-sm font-bold">
+            <Star size={14} className="text-[16px] mr-1" />
+            {service.rating.average}
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map(s => (
-            <Card key={s.id} className="group cursor-pointer hover:-translate-y-2 h-full flex flex-col service-card overflow-hidden !p-0 border-0 shadow-md">
-              {/* IMAGE DU SERVICE (PLEINE LARGEUR) */}
-              <div className="relative h-56 overflow-hidden">
-                  <img 
-                    src={CONTENT.images.services[s.image]} 
-                    alt={s.title} 
-                    className="w-full h-full object-cover service-img transition-transform duration-700 group-hover:scale-110"
-                    onError={(e) => {e.target.src='https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=800&auto=format&fit=crop'}}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 to-transparent opacity-60"></div>
-                  <div className="absolute bottom-4 left-4 text-white">
-                      <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-1">{CONTENT.hero.tabs[activeTab].split(' ')[1]}</div>
-                      <h4 className="font-bold text-xl font-serif leading-tight">{s.title}</h4>
+        <p className="text-secondary/60 text-sm line-clamp-2 mb-4 flex-1">{service.description}</p>
+
+        <div className="flex items-center justify-between pt-4 border-t border-outline/10 mt-auto">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-secondary/70 text-xs font-bold">
+              {service.providerAvatar}
+            </div>
+            <span className="text-xs text-secondary/70">{service.providerName}</span>
+          </div>
+          <div className="text-primary font-bold text-lg">
+            {service.pricing.basePrice} {service.pricing.currency}
+          </div>
+        </div>
+        
+        <div className="flex gap-2 mt-4">
+          <Button 
+            onClick={() => setSelectedService(service)} 
+            className="!py-2 !px-4 !text-sm flex-1"
+          >
+            {CONTENT.demo.steps.view_details}
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => setShowChat(true)} 
+            className="!py-2 !px-4 !text-sm"
+          >
+            <MessageCircle size={14} />
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+
+  const ServiceDetailModal = () => {
+    if (!selectedService) return null;
+    
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-surface rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          {/* Image Gallery */}
+          <div className="relative">
+            <img 
+              src={CONTENT.images.services[selectedService.images[0]]} 
+              alt={selectedService.title}
+              className="w-full h-64 object-cover"
+            />
+            <button 
+              onClick={() => setSelectedService(null)}
+              className="absolute top-4 right-4 bg-surface/90 p-2 rounded-full"
+            >
+              <X size={20} />
+            </button>
+            <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-bold">
+              {selectedService.category}
+            </div>
+          </div>
+          
+          <div className="p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-3xl font-bold text-secondary mb-2">{selectedService.title}</h2>
+                <div className="flex items-center gap-4 text-sm text-secondary/70 mb-4">
+                  <div className="flex items-center gap-1">
+                    <MapPin size={16} />
+                    {selectedService.location.city}, {selectedService.location.region}
                   </div>
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[#C2410C] font-bold text-sm shadow-lg">
-                    {s.price} DH
+                  <div className="flex items-center gap-1">
+                    <Star size={16} className="text-yellow-400 fill-yellow-400"/>
+                    {selectedService.rating.average} ({selectedService.rating.count} avis)
                   </div>
+                  <div className="flex items-center gap-1">
+                    <Users size={16} />
+                    Max {selectedService.capacity} personnes
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-primary">{selectedService.pricing.basePrice} {selectedService.pricing.currency}</div>
+                <div className="text-sm text-secondary/70">par {selectedService.pricing.unit}</div>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <h3 className="text-xl font-bold mb-4">À propos de ce service</h3>
+                <p className="text-secondary/70 mb-6">{selectedService.description}</p>
+                
+                <h4 className="font-bold mb-3">Ce qui est inclus :</h4>
+                <ul className="space-y-2 mb-6">
+                  {selectedService.amenities.map((amenity, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <Check size={16} className="text-green-500" />
+                      {amenity}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="bg-surface-variant p-4 rounded-xl">
+                  <h4 className="font-bold mb-2">Disponibilité</h4>
+                  <div className="text-sm text-secondary/70">
+                    {selectedService.availability.instantBook ? 
+                      "Réservation instantanée disponible" : 
+                      "Réservation soumise à validation de l'hôte"
+                    }
+                  </div>
+                </div>
               </div>
               
-              <div className="p-6 flex flex-col flex-grow">
-                  <p className="text-slate-500 text-sm mb-6 flex-grow leading-relaxed">{s.desc}</p>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <div className="flex items-center gap-1 text-sm font-bold text-slate-700">
-                      <Star size={14} className="text-yellow-400 fill-yellow-400"/> {s.rating}
-                    </div>
-                    <div className="text-xs text-[#0F172A] font-bold uppercase tracking-wider flex items-center gap-2 group-hover:text-[#C2410C] transition-colors">
-                        {CONTENT.demo.steps.book_now} <ArrowRight size={14}/>
+              <div>
+                <h3 className="text-xl font-bold mb-4">Votre hôte</h3>
+                <div className="flex items-center gap-4 p-4 bg-surface-variant rounded-xl mb-6">
+                  <div className="text-4xl">{selectedService.providerAvatar}</div>
+                  <div>
+                    <div className="font-bold">{selectedService.providerName}</div>
+                    <div className="flex items-center gap-1 text-sm text-secondary/70">
+                      <Star size={14} className="text-yellow-400 fill-yellow-400"/>
+                      {selectedService.rating.average} • Hôte vérifié
                     </div>
                   </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock size={16} className="text-secondary/40" />
+                    Durée: {selectedService.duration} minutes
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Shield size={16} className="text-secondary/40" />
+                    Paiement sécurisé • Annulation gratuite
+                  </div>
+                </div>
               </div>
-            </Card>
-          ))}
+            </div>
+            
+            <div className="flex gap-4">
+              <Button onClick={() => { setShowBooking(true); setSelectedService(null); }} className="!py-3 !px-8">
+                {CONTENT.demo.steps.book_now}
+              </Button>
+              <Button variant="secondary" onClick={() => setShowChat(true)} className="!py-3 !px-8">
+                <MessageCircle size={16} className="mr-2" />
+                Contacter l'hôte
+              </Button>
+            </div>
+          </div>
         </div>
-      </Section>
+      </div>
+    );
+  };
+
+  const BookingModal = () => {
+    const [bookingStep, setBookingStep] = useState(1);
+    const [bookingData, setBookingData] = useState({
+      date: '',
+      time: '',
+      guests: 1,
+      specialRequests: ''
+    });
+
+    if (!showBooking) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-surface rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Réserver votre expérience</h2>
+              <button onClick={() => setShowBooking(false)} className="p-2 hover:bg-surface-variant rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            
+            {bookingStep === 1 && (
+              <div className="space-y-6">
+                <div>
+                  <label className="block font-bold mb-2">Date</label>
+                  <input 
+                    type="date" 
+                    className="w-full p-3 border border-outline rounded-xl"
+                    value={bookingData.date}
+                    onChange={(e) => setBookingData({...bookingData, date: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-2">Heure</label>
+                  <select 
+                    className="w-full p-3 border border-outline rounded-xl"
+                    value={bookingData.time}
+                    onChange={(e) => setBookingData({...bookingData, time: e.target.value})}
+                  >
+                    <option value="">Choisir une heure</option>
+                    <option value="09:00">09:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="18:00">18:00</option>
+                    <option value="20:00">20:00</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold mb-2">Nombre de personnes</label>
+                  <select 
+                    className="w-full p-3 border border-outline rounded-xl"
+                    value={bookingData.guests}
+                    onChange={(e) => setBookingData({...bookingData, guests: e.target.value})}
+                  >
+                    {Array.from({length: selectedService?.capacity || 4}, (_, i) => (
+                      <option key={i+1} value={i+1}>{i+1} personne{i+1 > 1 ? 's' : ''}</option>
+                    ))}
+                  </select>
+                </div>
+                <Button onClick={() => setBookingStep(2)} className="w-full !py-4">
+                  Continuer vers le paiement
+                </Button>
+              </div>
+            )}
+            
+            {bookingStep === 2 && (
+              <div className="space-y-6">
+                <div className="bg-surface-variant p-4 rounded-xl">
+                  <h3 className="font-bold mb-2">Récapitulatif</h3>
+                  <div className="text-sm space-y-1">
+                    <div>Service: {selectedService?.title}</div>
+                    <div>Date: {bookingData.date || 'À définir'}</div>
+                    <div>Heure: {bookingData.time || 'À définir'}</div>
+                    <div>Personnes: {bookingData.guests}</div>
+                    <div className="font-bold text-lg text-primary mt-2">
+                      Total: {selectedService?.pricing.basePrice * bookingData.guests || 0} {selectedService?.pricing.currency}
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block font-bold mb-2">Demandes spéciales (optionnel)</label>
+                  <textarea 
+                    className="w-full p-3 border border-outline rounded-xl h-24"
+                    placeholder="Allergies, régime alimentaire, demandes spécifiques..."
+                    value={bookingData.specialRequests}
+                    onChange={(e) => setBookingData({...bookingData, specialRequests: e.target.value})}
+                  />
+                </div>
+                
+                <div className="bg-green-50 p-4 rounded-xl border border-green-200">
+                  <div className="flex items-center gap-2 text-green-700 font-bold mb-2">
+                    <Shield size={16} />
+                    Paiement 100% sécurisé
+                  </div>
+                  <div className="text-sm text-green-600">
+                    Vos informations sont protégées. Paiement traité par Stripe.
+                  </div>
+                </div>
+                
+                <Button onClick={() => alert('Réservation confirmée ! 🎉\n\nVous recevrez un email de confirmation et les coordonnées de votre hôte.')} className="w-full !py-4">
+                  Confirmer la réservation
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const ChatModal = () => {
+    const [messages, setMessages] = useState([
+      { id: 1, sender: 'host', text: `Bonjour ! Je suis ${selectedService?.providerName || 'l\'hôte'}. Comment puis-je vous aider pour votre réservation ?`, time: '10:30' },
+      { id: 2, sender: 'user', text: `Bonjour ! Je suis intéressé par votre service "${selectedService?.title}". Avez-vous des disponibilités cette semaine ?`, time: '10:32' },
+      { id: 3, sender: 'host', text: 'Oui bien sûr ! Je peux vous proposer demain après-midi à 14h. Le service dure environ 3h. Cela vous convient-il ?', time: '10:33' }
+    ]);
+    const [newMessage, setNewMessage] = useState('');
+
+    if (!showChat) return null;
+
+    const sendMessage = () => {
+      if (newMessage.trim()) {
+        setMessages([...messages, {
+          id: messages.length + 1,
+          sender: 'user',
+          text: newMessage,
+          time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+        }]);
+        setNewMessage('');
+        
+        // Simulate host response
+        setTimeout(() => {
+          setMessages(prev => [...prev, {
+            id: prev.length + 1,
+            sender: 'host',
+            text: 'Parfait ! Je vous envoie les détails de réservation. Vous pouvez aussi réserver directement via la plateforme.',
+            time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+          }]);
+        }, 2000);
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-surface rounded-2xl max-w-md w-full h-[600px] flex flex-col">
+          <div className="p-4 border-b border-outline flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">{selectedService?.providerAvatar}</div>
+              <div>
+                <div className="font-bold">{selectedService?.providerName}</div>
+                <div className="text-xs text-green-600">En ligne</div>
+              </div>
+            </div>
+            <button onClick={() => setShowChat(false)} className="p-2 hover:bg-surface-variant rounded-full">
+              <X size={20} />
+            </button>
+          </div>
+          
+          <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+            {messages.map(msg => (
+              <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] p-3 rounded-2xl ${
+                  msg.sender === 'user' 
+                    ? 'bg-primary text-white' 
+                    : 'bg-surface-variant text-secondary'
+                }`}>
+                  <div className="text-sm">{msg.text}</div>
+                  <div className={`text-xs mt-1 ${msg.sender === 'user' ? 'text-orange-100' : 'text-secondary/50'}`}>
+                    {msg.time}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="p-4 border-t border-outline">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Tapez votre message..."
+                className="flex-1 p-3 border border-outline rounded-xl"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              />
+              <Button onClick={sendMessage} className="!p-3">
+                <Send size={16} />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-surface-variant">
+      {/* Hero Section */}
+      <div className="relative bg-surface overflow-hidden border-b border-outline/10">
+        <div className="absolute inset-0 bg-dot-pattern opacity-10 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+        
+        <div className="container mx-auto px-4 py-16 relative z-10 text-center">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-secondary mb-4">
+            Découvrez des Services <span className="text-primary">Uniques</span>
+          </h1>
+          <p className="text-xl text-secondary/70 max-w-2xl mx-auto mb-8">
+            Trouvez des espaces, apprenez de nouvelles compétences et connectez-vous avec la culture locale.
+          </p>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto relative">
+            <div className="relative bg-surface rounded-full shadow-lg overflow-hidden">
+              <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary/50" />
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={CONTENT.demo.search_placeholder} 
+                className="!py-4 !pl-12 !pr-4 w-full bg-transparent outline-none text-secondary placeholder:text-secondary/40"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* Filters Sidebar */}
+          <aside className="hidden lg:block w-64 flex-shrink-0 space-y-6">
+            <div className="bg-surface p-6 rounded-2xl shadow-sm border border-outline/10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-secondary">Filtres</h3>
+                <button 
+                  mat-button 
+                  color="warn" 
+                  onClick={() => setFilters({priceMin: '', priceMax: '', rating: '', location: '', category: ''})}
+                  className="text-sm text-red-500 hover:text-red-700"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+
+              {/* Categories */}
+              <div className="space-y-4 mb-6">
+                <label className="text-sm font-medium text-secondary/70">Catégorie</label>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input 
+                      type="radio" 
+                      name="category" 
+                      value=""
+                      checked={filters.category === ""}
+                      onChange={(e) => setFilters({...filters, category: e.target.value})}
+                      className="text-primary"
+                    />
+                    <span>Toutes les catégories</span>
+                  </label>
+                  {['Space', 'Skills', 'Connect'].map(cat => (
+                    <label key={cat} className="flex items-center gap-2 text-sm">
+                      <input 
+                        type="radio" 
+                        name="category" 
+                        value={cat.toLowerCase()}
+                        checked={filters.category === cat.toLowerCase()}
+                        onChange={(e) => setFilters({...filters, category: e.target.value})}
+                        className="text-primary"
+                      />
+                      <span>{CONTENT.demo.categories[cat.toLowerCase()]}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price Range */}
+              <div className="space-y-4 mb-6">
+                <label className="text-sm font-medium text-secondary/70">Prix (DH)</label>
+                <div className="space-y-2">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    className="w-full p-2 border border-outline rounded text-sm"
+                    value={filters.priceMin}
+                    onChange={(e) => setFilters({...filters, priceMin: e.target.value})}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    className="w-full p-2 border border-outline rounded text-sm"
+                    value={filters.priceMax}
+                    onChange={(e) => setFilters({...filters, priceMax: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              {/* Rating */}
+              <div className="space-y-4 mb-6">
+                <label className="text-sm font-medium text-secondary/70">Note minimum</label>
+                <select 
+                  className="w-full p-2 border border-outline rounded text-sm"
+                  value={filters.rating}
+                  onChange={(e) => setFilters({...filters, rating: e.target.value})}
+                >
+                  <option value="">Toutes les notes</option>
+                  <option value="4.5">4.5+ étoiles</option>
+                  <option value="4.0">4.0+ étoiles</option>
+                  <option value="3.5">3.5+ étoiles</option>
+                </select>
+              </div>
+
+              {/* Location */}
+              <div className="space-y-4">
+                <label className="text-sm font-medium text-secondary/70">Ville</label>
+                <select 
+                  className="w-full p-2 border border-outline rounded text-sm"
+                  value={filters.location}
+                  onChange={(e) => setFilters({...filters, location: e.target.value})}
+                >
+                  <option value="">Toutes les villes</option>
+                  {CONTENT.demo.cities.map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Results Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-secondary">
+                {filteredServices.length} Service{filteredServices.length !== 1 ? 's' : ''} trouvé{filteredServices.length !== 1 ? 's' : ''}
+              </h2>
+              
+              {/* View Toggle & Sort */}
+              <div className="flex items-center gap-4">
+                <select 
+                  className="px-3 py-2 border border-outline rounded-lg text-sm"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="relevance">Pertinence</option>
+                  <option value="price-asc">Prix croissant</option>
+                  <option value="price-desc">Prix décroissant</option>
+                  <option value="rating">Meilleures notes</option>
+                </select>
+                
+                <div className="bg-surface rounded-lg p-1 shadow-sm border border-outline/10 flex">
+                  <button 
+                    className={`p-2 rounded ${viewMode === 'grid' ? 'bg-primary text-white' : 'text-secondary/70'}`}
+                    onClick={() => setViewMode('grid')}
+                  >
+                    <Grid size={16} />
+                  </button>
+                  <button 
+                    className={`p-2 rounded ${viewMode === 'list' ? 'bg-primary text-white' : 'text-secondary/70'}`}
+                    onClick={() => setViewMode('list')}
+                  >
+                    <List size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Services Grid/List */}
+            <div className={`${
+              viewMode === 'grid' 
+                ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6' 
+                : 'flex flex-col gap-4'
+            }`}>
+              {filteredServices.map(s => (
+                <ServiceCard key={s.id} service={s} />
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {filteredServices.length === 0 && (
+              <div className="text-center py-16 bg-surface rounded-3xl border border-dashed border-outline/30 mt-8">
+                <div className="w-16 h-16 mx-auto bg-surface-variant rounded-full flex items-center justify-center text-secondary/50 mb-4">
+                  <Search size={32} />
+                </div>
+                <h3 className="text-xl font-bold text-secondary mb-2">Aucun service trouvé</h3>
+                <p className="text-secondary/60 mb-6">Essayez de modifier vos filtres ou votre recherche.</p>
+                <Button onClick={() => { setSearchQuery(''); setFilters({priceMin: '', priceMax: '', rating: '', location: '', category: ''}); }}>
+                  Réinitialiser les filtres
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Modals */}
+      <ServiceDetailModal />
+      <BookingModal />
+      <ChatModal />
     </div>
   );
 };
@@ -875,7 +2248,11 @@ const App = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMenuOpen(false); }, [view]);
+  useEffect(() => { 
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    // Use setTimeout to avoid synchronous state update in effect
+    setTimeout(() => setIsMenuOpen(false), 0);
+  }, [view]);
 
   return (
     <div className="font-sans text-slate-800 antialiased selection:bg-orange-200 selection:text-orange-900 bg-zellige min-h-screen">
