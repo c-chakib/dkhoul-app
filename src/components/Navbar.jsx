@@ -16,7 +16,8 @@ const Navbar = () => {
     { path: '/simulator', label: CONTENT.nav.simulator },
     { path: '/innovation', label: CONTENT.nav.innovation },
     { path: '/technical', label: CONTENT.nav.technical },
-    { path: '/financial', label: CONTENT.nav.financial }
+    { path: '/financial', label: CONTENT.nav.financial },
+    { path: '/contact', label: 'Contact' }
   ];
 
   const handleNavClick = (path) => {

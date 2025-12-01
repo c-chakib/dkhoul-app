@@ -1,0 +1,29 @@
+{
+    "name": "DKHOUL - Plateforme de Micro-Services Marocains",
+    "short_name": "DKHOUL",
+    "description": "La première marketplace décentralisée connectant les touristes aux citoyens marocains",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFF7ED",
+    "theme_color": "#C2410C",
+    "orientation": "portrait-primary",
+    "categories": ["business", "lifestyle", "travel"],
+    "lang": "fr-MA",
+    "icons": [
+        {
+            "src": "/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ]
+}

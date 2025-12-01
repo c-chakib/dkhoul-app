@@ -1,11 +1,17 @@
 import React from 'react';
 import { MapPin, Search, DollarSign } from 'lucide-react';
 import { Button } from './shared';
+import SEO from './SEO';
 
 // Assuming CONTENT is passed as prop or imported
 const LandingPage = ({ CONTENT, navigate }) => {
     return (
         <>
+            <SEO
+                title="DKHOUL - Découvrez le Vrai Maroc"
+                description={CONTENT.hero.subtitle}
+                keywords="Maroc, micro-services, tourisme authentique, plateforme décentralisée, citoyens locaux, touristes"
+            />
             <div className="relative min-h-screen flex flex-col lg:flex-row bg-[#0F172A]">
                 <div className="lg:w-1/2 flex flex-col justify-center px-8 lg:px-20 py-24 z-10">
                     <div className="inline-block w-fit bg-[#C2410C]/20 text-[#C2410C] px-4 py-1 rounded-full text-sm font-semibold border border-[#C2410C]/30 mb-6 animate-pulse">{CONTENT.hero.launch}</div>
@@ -20,9 +26,10 @@ const LandingPage = ({ CONTENT, navigate }) => {
                             <Button onClick={() => navigate('/demo')} className="!rounded-xl !px-6"><Search size={20} /></Button>
                         </div>
                     </div>
-                    <div className="mt-8 flex gap-4">
+                    <div className="mt-8 flex flex-wrap gap-4">
                         <Button onClick={() => navigate('/simulator')}>Simuler mes gains (Hôte)</Button>
                         <Button variant="secondary" onClick={() => navigate('/financial')}>Espace Investisseur</Button>
+                        <Button variant="secondary" onClick={() => navigate('/contact')}>Nous contacter</Button>
                     </div>
                 </div>
                 <div className="lg:w-1/2 relative min-h-[50vh] lg:min-h-auto bg-slate-800 overflow-hidden">

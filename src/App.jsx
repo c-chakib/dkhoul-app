@@ -1,16 +1,21 @@
-﻿import React from 'react';
+﻿import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { CONTENT } from './content';
 
-// Import all view components
+// Import critical components immediately
 import Navbar from './components/Navbar';
-import LandingPage from './components/LandingPage';
-import PresentationView from './components/PresentationView';
-import DemoView from './components/DemoView';
-import HostSimulatorView from './components/HostSimulatorView';
-import InnovationView from './components/InnovationView';
-import TechnicalView from './components/TechnicalView';
-import FinancialView from './components/FinancialView';
+import ErrorPage from './components/ErrorPage';
+import Loading from './components/Loading';
+
+// Lazy load non-critical components for better performance
+const LandingPage = lazy(() => import('./components/LandingPage'));
+const PresentationView = lazy(() => import('./components/PresentationView'));
+const DemoView = lazy(() => import('./components/DemoView'));
+const HostSimulatorView = lazy(() => import('./components/HostSimulatorView'));
+const InnovationView = lazy(() => import('./components/InnovationView'));
+const TechnicalView = lazy(() => import('./components/TechnicalView'));
+const FinancialView = lazy(() => import('./components/FinancialView'));
+const ContactView = lazy(() => import('./components/ContactView'));
 
 /**
  * ------------------------------------------------------------------
@@ -59,15 +64,19 @@ const App = () => {
   return (
     <Router>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<LandingPageWrapper />} />
-        <Route path="/presentation" element={<PresentationViewWrapper />} />
-        <Route path="/demo" element={<DemoView />} />
-        <Route path="/simulator" element={<HostSimulatorView />} />
-        <Route path="/innovation" element={<InnovationView CONTENT={CONTENT} />} />
-        <Route path="/technical" element={<TechnicalView CONTENT={CONTENT} />} />
-        <Route path="/financial" element={<FinancialView CONTENT={CONTENT} />} />
-      </Routes>
+      <Suspense fallback={<Loading message="Chargement de la page..." />}>
+        <Routes>
+          <Route path="/" element={<LandingPageWrapper />} />
+          <Route path="/presentation" element={<PresentationViewWrapper />} />
+          <Route path="/demo" element={<DemoView />} />
+          <Route path="/simulator" element={<HostSimulatorView />} />
+          <Route path="/innovation" element={<InnovationView CONTENT={CONTENT} />} />
+          <Route path="/technical" element={<TechnicalView CONTENT={CONTENT} />} />
+          <Route path="/financial" element={<FinancialView CONTENT={CONTENT} />} />
+          <Route path="/contact" element={<ContactView />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 };
